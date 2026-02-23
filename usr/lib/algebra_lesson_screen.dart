@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 class AlgebraLessonScreen extends StatelessWidget {
   const AlgebraLessonScreen({super.key});
@@ -40,7 +41,8 @@ class AlgebraLessonScreen extends StatelessWidget {
             _buildConceptItem(
               context,
               'تعريف الأسس السالبة',
-              'a⁻ⁿ = 1/aⁿ (حيث المقدار يصبح مقاماً بأس موجب).',
+              r'a^{-n} = \frac{1}{a^n}',
+              descriptionSuffix: ' (حيث المقدار يصبح مقاماً بأس موجب).',
               isMath: true,
             ),
             _buildConceptItem(
@@ -79,27 +81,60 @@ class AlgebraLessonScreen extends StatelessWidget {
             _buildExplanationStep(
               context,
               '1. التعامل مع الضرب والأسس السالبة',
-              'في المثال (2a⁻²)(3a³b²)(c⁻²):\n'
-                  '• ابدأ بضرب الأعداد الثابتة (2 × 3 = 6).\n'
-                  '• اجمع أسس الأساسات المتشابهة (a⁻² مع a³).\n'
-                  '• تذكر تعريف الأس السالب: c⁻² تصبح 1/c².',
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('في المثال:'),
+                  const SizedBox(height: 8),
+                  Center(child: Math.tex(r'(2a^{-2})(3a^3b^2)(c^{-2})', textStyle: const TextStyle(fontSize: 18))),
+                  const SizedBox(height: 8),
+                  const Text('• ابدأ بضرب الأعداد الثابتة:'),
+                  Center(child: Math.tex(r'2 \times 3 = 6', textStyle: const TextStyle(fontSize: 16))),
+                  const Text('• اجمع أسس الأساسات المتشابهة (a⁻² مع a³).'),
+                  const Text('• تذكر تعريف الأس السالب:'),
+                  Row(
+                    children: [
+                      Math.tex(r'c^{-2}', textStyle: const TextStyle(fontSize: 16)),
+                      const Text(' تصبح '),
+                      Math.tex(r'\frac{1}{c^2}', textStyle: const TextStyle(fontSize: 16)),
+                    ],
+                  ),
+                ],
+              ),
             ),
             _buildExplanationStep(
               context,
               '2. التعامل مع القسمة',
-              'في العبارة q²r⁴ / q⁷r³:\n'
-                  '• طبق خاصية "قسمة القوى". اطرح أسس المقام من أسس البسط.\n'
-                  '• q²⁻⁷ · r⁴⁻³ = q⁻⁵r\n'
-                  '• للوصول لأبسط صورة، ننقل q⁻⁵ للمقام لتصبح r/q⁵.',
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('في العبارة:'),
+                  Center(child: Math.tex(r'\frac{q^2r^4}{q^7r^3}', textStyle: const TextStyle(fontSize: 18))),
+                  const SizedBox(height: 8),
+                  const Text('• طبق خاصية "قسمة القوى". اطرح أسس المقام من أسس البسط.'),
+                  Center(child: Math.tex(r'q^{2-7} \cdot r^{4-3} = q^{-5}r', textStyle: const TextStyle(fontSize: 16))),
+                  const SizedBox(height: 8),
+                  const Text('• للوصول لأبسط صورة، ننقل q⁻⁵ للمقام لتصبح:'),
+                  Center(child: Math.tex(r'\frac{r}{q^5}', textStyle: const TextStyle(fontSize: 18))),
+                ],
+              ),
             ),
             _buildExplanationStep(
               context,
               '3. التعامل مع القوى المرفوعة لقوة',
-              'في العبارة ((-2a⁴)/b²)³:\n'
-                  '• وزع الأس 3 على البسط والمقام.\n'
-                  '• وزع الأس على -2 و a⁴.\n'
-                  '• استخدم "قوة القوة" بضرب الأسس 4 × 3.\n'
-                  '• النتيجة النهائية: -8a¹² / b⁶.',
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('في العبارة:'),
+                  Center(child: Math.tex(r'(\frac{-2a^4}{b^2})^3', textStyle: const TextStyle(fontSize: 18))),
+                  const SizedBox(height: 8),
+                  const Text('• وزع الأس 3 على البسط والمقام.'),
+                  const Text('• وزع الأس على -2 و a⁴.'),
+                  const Text('• استخدم "قوة القوة" بضرب الأسس 4 × 3.'),
+                  const Text('• النتيجة النهائية:'),
+                  Center(child: Math.tex(r'\frac{-8a^{12}}{b^6}', textStyle: const TextStyle(fontSize: 18))),
+                ],
+              ),
             ),
 
             const SizedBox(height: 24),
@@ -156,8 +191,8 @@ class AlgebraLessonScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildConceptItem(BuildContext context, String title, String description,
-      {bool isMath = false}) {
+  Widget _buildConceptItem(BuildContext context, String title, String content,
+      {bool isMath = false, String? descriptionSuffix}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Row(
@@ -174,23 +209,29 @@ class AlgebraLessonScreen extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: RichText(
-              text: TextSpan(
-                style: TextStyle(color: Colors.black87, fontSize: 16, fontFamily: 'Arial'),
-                children: [
-                  TextSpan(
-                    text: '$title: ',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$title:',
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                if (isMath)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Math.tex(content, textStyle: const TextStyle(fontSize: 18)),
+                  )
+                else
+                  Text(
+                    content,
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  TextSpan(
-                    text: description,
-                    style: isMath
-                        ? const TextStyle(
-                            fontFamily: 'Courier New', fontWeight: FontWeight.w600)
-                        : null,
+                if (descriptionSuffix != null)
+                  Text(
+                    descriptionSuffix,
+                    style: const TextStyle(fontSize: 16),
                   ),
-                ],
-              ),
+              ],
             ),
           ),
         ],
@@ -198,7 +239,7 @@ class AlgebraLessonScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildExplanationStep(BuildContext context, String title, String content) {
+  Widget _buildExplanationStep(BuildContext context, String title, Widget content) {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
@@ -216,10 +257,8 @@ class AlgebraLessonScreen extends StatelessWidget {
               ),
             ),
             const Divider(),
-            Text(
-              content,
-              style: const TextStyle(fontSize: 15, height: 1.6),
-            ),
+            const SizedBox(height: 8),
+            content,
           ],
         ),
       ),
@@ -261,20 +300,19 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Text(
-                '6ab² / c⁻²',
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Courier New'),
-                textDirection: TextDirection.ltr,
+              child: Math.tex(
+                r'\frac{6ab^2}{c^{-2}}',
+                textStyle: const TextStyle(fontSize: 24),
               ),
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'فكر: هل وجود الأس السالب في المقام يجعل العبارة في أبسط صورة؟',
-            style: TextStyle(fontStyle: FontStyle.italic),
+          Row(
+            children: [
+              const Text('فكر: هل وجود الأس السالب '),
+              Math.tex(r'c^{-2}', textStyle: const TextStyle(fontSize: 16)),
+              const Expanded(child: Text(' في المقام يجعل العبارة في أبسط صورة؟')),
+            ],
           ),
           const SizedBox(height: 15),
           if (!_showAnswer)
@@ -294,20 +332,25 @@ class _ActivityWidgetState extends State<ActivityWidget> {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
+                children: [
+                  const Text(
                     'الإجابة:',
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
                   ),
-                  Text('كلا، العبارة ليست في أبسط صورة بسبب وجود الأس السالب.'),
-                  SizedBox(height: 8),
-                  Text(
+                  const Text('كلا، العبارة ليست في أبسط صورة بسبب وجود الأس السالب.'),
+                  const SizedBox(height: 8),
+                  const Text(
                     'القاعدة:',
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
                   ),
-                  Text('يجب التخلص من الأس السالب بقلب المقدار (رفعه للبسط).'),
-                  SizedBox(height: 8),
-                  Text('تصبح العبارة: 6ab²c²', textDirection: TextDirection.ltr),
+                  const Text('يجب التخلص من الأس السالب بقلب المقدار (رفعه للبسط).'),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Text('تصبح العبارة: '),
+                      Math.tex(r'6ab^2c^2', textStyle: const TextStyle(fontSize: 18)),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -389,9 +432,20 @@ class _QuizWidgetState extends State<QuizWidget> {
 
         // Question 2
         _buildQuizCard(
-          title: 'س2: صح أو خطأ: ناتج تبسيط العبارة q²/q⁷ هو q⁵.',
+          title: 'س2: صح أو خطأ:',
           content: Column(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('ناتج تبسيط العبارة '),
+                  Math.tex(r'\frac{q^2}{q^7}', textStyle: const TextStyle(fontSize: 16)),
+                  const Text(' هو '),
+                  Math.tex(r'q^5', textStyle: const TextStyle(fontSize: 16)),
+                  const Text('.'),
+                ],
+              ),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -420,14 +474,26 @@ class _QuizWidgetState extends State<QuizWidget> {
               if (_q2Checked)
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
-                  child: Text(
-                    _q2Selected == false
-                        ? 'أحسنت! الإجابة خطأ. التصحيح: 1/q⁵'
-                        : 'للأسف خطأ. عند القسمة نطرح الأسس 2-7 = -5، لذا تصبح 1/q⁵.',
-                    style: TextStyle(
-                      color: _q2Selected == false ? Colors.green : Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: Column(
+                    children: [
+                      Text(
+                        _q2Selected == false
+                            ? 'أحسنت! الإجابة خطأ.'
+                            : 'للأسف خطأ.',
+                        style: TextStyle(
+                          color: _q2Selected == false ? Colors.green : Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('التصحيح: '),
+                          Math.tex(r'\frac{1}{q^5}', textStyle: const TextStyle(fontSize: 16)),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
             ],
@@ -436,10 +502,12 @@ class _QuizWidgetState extends State<QuizWidget> {
 
         // Question 3
         _buildQuizCard(
-          title: 'س3: أكمل الحل لتبسيط العبارة (a/4)⁻³',
+          title: 'س3: أكمل الحل لتبسيط العبارة:',
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Center(child: Math.tex(r'(\frac{a}{4})^{-3}', textStyle: const TextStyle(fontSize: 18))),
+              const SizedBox(height: 10),
               const Text('باستخدام تعريف الأس السالب، نقوم بقلب الكسر لتصبح العبارة:'),
               const SizedBox(height: 10),
               if (_q3ShowAnswer)
@@ -447,14 +515,14 @@ class _QuizWidgetState extends State<QuizWidget> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(10),
                   color: Colors.green.shade50,
-                  child: const Text(
-                    '(4/a)³',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green),
-                    textAlign: TextAlign.center,
-                    textDirection: TextDirection.ltr,
+                  child: Center(
+                    child: Math.tex(
+                      r'(\frac{4}{a})^3',
+                      textStyle: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green),
+                    ),
                   ),
                 )
               else
